@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: metrics-collector
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: metrics-collector
+            image: nitz2906/metrics-collector:v1.3.0
+            imagePullPolicy: IfNotPresent  
+            volumeMounts:
+            - name: metrics-storage
+              mountPath: /metrics
+          restartPolicy: OnFailure
+          volumes:
+          - name: metrics-storage
+            persistentVolumeClaim:
+              claimName: metrics-pvc
